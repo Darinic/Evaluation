@@ -5,7 +5,7 @@ import { AdminPage } from "../pages/admin-page";
 
 import { testData } from "../data/testData";
 
-test.describe("DB Food ordering Page login testing", async () => {
+test.describe("Lunch ordering login functionality", async () => {
   let loginPage;
   let employeePage;
   let adminPage;

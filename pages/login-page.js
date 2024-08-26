@@ -18,6 +18,7 @@ export class LoginPage {
     await this.page.locator('button:has-text("Login")').click();
   }
 
+  // Of course writing incorrect data should not make the page infinite load, but this test is more accustomed to the application how it currently operates
   async interceptGraphQL() {
     this.page.on("response", async (response) => {
       if (response.status() === 500 && response.url().includes("graphql")) {

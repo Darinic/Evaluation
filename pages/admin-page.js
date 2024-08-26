@@ -20,13 +20,13 @@ export class AdminPage {
     );
     this.providerColorField = page.locator('input[aria-label="Color"]');
     this.addDishButton = page.locator('button:has-text("Dish")').nth(1);
-    this.selectionNameField = page.locator(
+    this.soupSelectionNameField = page.locator(
       'input[aria-label="Selection Name"][name="Sriubos (Soups) category"]'
     );
-    this.priceField = page.locator(
+    this.soupPriceField = page.locator(
       'input[aria-label="Price"][name="Sriubos (Soups) category"]'
     );
-    this.countField = page.locator(
+    this.soupCountField = page.locator(
       'input[aria-label="Count"][name="Sriubos (Soups) category"]'
     );
     this.translationField = page.locator(
@@ -47,12 +47,16 @@ export class AdminPage {
     this.expensesSection = page.locator(
       'div.v-list__tile__title:has-text("Users Expenses")'
     );
+    this.dropdown = page.locator(".v-select__selection");
+    this.costCells = page.locator("tbody tr td:nth-child(4)");
+    this.priceToPayCells = page.locator("tbody tr td:nth-child(3)");
+    this.amountToCollectElement = this.page.locator('tfoot td:has-text("Amount to collect:") strong');
+    this.listLocator = this.page.locator("div.v-list.v-list--subheader.theme--light");
+    this.totalCostText = this.page.locator('td:has-text("Total cost:") span')
   }
 
   async validateAdminLogin() {
-    await expect(this.nameLocator).toHaveText(testData.loggedInAdminUser, {
-      timeout: 5000,
-    });
+    await expect(this.nameLocator).toHaveText(testData.loggedInAdminUser);
   }
 
   async goToLunchEditPage() {
@@ -65,19 +69,21 @@ export class AdminPage {
   }
 
   async fillInSoupFields() {
-    await this.selectionNameField.fill("Mega tasty soup");
-    await this.priceField.fill("10");
-    await this.countField.fill("2");
+    await this.soupSelectionNameField.fill(testData.soupName);
+    await this.soupPriceField.fill(testData.soupPrice);
+    await this.soupCountField.fill(testData.soupCount);
   }
 
   async fillInMainDishFields() {
     await this.mainDishesSection.click();
-    await this.mainDishFieldSelection.fill("Mega tasty main dish");
-    await this.mainDishPriceField.fill("10.50");
+    await this.mainDishFieldSelection.fill(testData.mainDishName);
+    await this.mainDishPriceField.fill(testData.mainDishPrice);
   }
 
   async generateRandomProviderName() {
-    let randomProviderName = `JovitosTeam${Math.floor(Math.random() * 1000)}`;
+    let randomProviderName = `${testData.teamName}${Math.floor(
+      Math.random() * 1000
+    )}`;
     return randomProviderName;
   }
 
@@ -95,28 +101,71 @@ export class AdminPage {
     await this.expensesSection.click();
   }
 
-  // async retrieveSumofCosts() {
-  //     const costs = await this.page.locator('tbody tr td:nth-child(4)').evaluateAll(
-  //         cells => cells.map(cell => {
-  //           const rawText = cell.innerText;
-  //           const value = parseFloat(rawText.replace('€', '').trim());
-  //           return value || 0;
-  //         })
-  //       );
+  async retrieveSumofCosts() {
+    let costsArray = [];
+    let count = await this.costCells.count(); // Count the number of cells found
 
-  //       // Calculate the sum of all cost values
-  //       const sumOfCosts = costs.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    for (let i = 0; i < count; i++) {
+      let rawText = await this.costCells.nth(i).innerText(); // Get text content
+      let value = parseFloat(rawText.replace("€", "").trim());
 
-  //       return sumOfCosts;
-  // }
+      costsArray.push(value || 0); // Push the value to the array, defaulting to 0 if NaN
+    }
+    // Calculate the sum of all cost values in the array
+    let sumOfCosts = costsArray.reduce((acc, currentValue) => acc + currentValue,0);
+
+    let roundedSumOfCosts = Math.round(sumOfCosts * 100) / 100;
+
+    return roundedSumOfCosts;
+  }
+
+  async retrieveSumofPriceToPay() {
+    let costsArray = [];
+    let count = await this.priceToPayCells.count(); // Count the number of cells found
+
+    for (let i = 0; i < count; i++) {
+      let rawText = await this.priceToPayCells.nth(i).innerText(); // Get text content
+      let value = parseFloat(rawText.replace("€", "").trim());
+
+      costsArray.push(value || 0); // Push the value to the array, defaulting to 0 if NaN
+    }
+    // Calculate the sum of all cost values in the array
+    let sumOfCosts = costsArray.reduce((acc, currentValue) => acc + currentValue,0);
+
+    let roundedSumOfCosts = Math.round(sumOfCosts * 100) / 100;
+
+    return roundedSumOfCosts;
+  }
 
   async retrieveTotalCostText() {
-    const totalCostText = await this.page
-      .locator('td:has-text("Total cost:") span')
-      .textContent();
-    const totalCost = parseFloat(
+    let totalCostText = await this.totalCostText.textContent();
+    let totalCost = parseFloat(
       totalCostText.replace("Total cost:", "").replace("€", "").trim()
     );
     return totalCost;
+  }
+
+  async selectAllRows() {
+    await this.dropdown.click();
+
+    //if i put this in locator section, i cannot use waitFor, if I can't use waitFor, i do not force the timeout and it fails
+    const allOption = this.page.locator('.v-list__tile__title:has-text("All")');
+    
+    await allOption.waitFor({ state: "visible", timeout: 3000 });
+    await allOption.click();
+  }
+
+  async retrievePriceToPayText() {
+    let rawText = await this.amountToCollectElement.textContent();
+    let amountToCollect = parseFloat(rawText.replace('Amount to collect:', '').replace('€', '').trim());
+
+    return amountToCollect;
+  }
+
+  async retrieveAddedProvider(providerName) {
+    let addedProvider = this.listLocator.locator(`div.v-list__tile__title:has-text("${providerName}")`
+);
+
+    return addedProvider;
   }
 }

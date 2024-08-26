@@ -25,4 +25,11 @@ export const testData = {
         name: "",
         password: "",
     },
+    teamName: "Jovitos Team",
+    soupName: "Mega tasty soup",
+    soupPrice: "10",
+    soupCount: "2",
+    mainDishName: "Mega tasty main dish",
+    mainDishPrice: "12",
+
 };

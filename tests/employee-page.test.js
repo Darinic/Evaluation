@@ -28,8 +28,12 @@ test.describe("Employee page functionality", async () => {
     await employeePage.validateUserExpensesSectionIsNotVisible();
   });
 
-  //FAILED due to bugs in the app
-  // test("User should be able to buy lunch", async () => {
-  //     await employeePage.createAnOrder();
-  // });
+  //Modified and fixed after the evaluation, as it was not working
+  test("After clicking on the soup it should be added to the cart", async () => {
+    await employeePage.reachPietuManijaPage();
+    await employeePage.selectFirstSoupItem();
+    let firstProductName = await employeePage.extractFirstProductName();
+    await employeePage.validateProductInCart(firstProductName);
+  });
+
 });

@@ -32,20 +32,27 @@ test.describe("Admin Page functionality", async () => {
     await adminPage.fillInMainDishFields();
     await adminPage.saveButton.click();
 
-    let listLocator = page.locator("div.v-list.v-list--subheader.theme--light");
-    let addedProvider = listLocator.locator(
-      `div.v-list__tile__title:has-text("${randomProviderName}")`
-    );
-
-    await expect(addedProvider).toBeVisible();
+    let addedProvider = adminPage.retrieveAddedProvider(randomProviderName);
+    
     await expect(addedProvider).toHaveText(randomProviderName);
   });
 
-  // FAILED due to not calculating sums of costs correctly
-  test("Expenses should be calculated accurately for the admin", async () => {
+  // THIS ONE IS EDITED AFTER THE EVALUATION WORKSHOP/BEFORE IT FAILED
+  test("Total cost in Expenses should be calculated accurately", async () => {
     await adminPage.goToExpenses({ timeout: 10000 });
-    let sumOfCosts = await adminPage.retrieveSumofCosts();
+    await adminPage.selectAllRows();
     let totalCost = await adminPage.retrieveTotalCostText();
+    let sumOfCosts = await adminPage.retrieveSumofCosts();
     expect(sumOfCosts).toBe(totalCost);
+  });
+
+
+// Newly added test after the evaluation workshop
+  test("Price to pay in Expenses should be calculated accurately", async () => {
+    await adminPage.goToExpenses({ timeout: 10000 });
+    await adminPage.selectAllRows();
+    let priceToPay = await adminPage.retrievePriceToPayText();
+    let sumOfPriceToPay = await adminPage.retrieveSumofPriceToPay();
+    expect(sumOfPriceToPay).toBe(priceToPay);
   });
 });
