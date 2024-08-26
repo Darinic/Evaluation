@@ -17,10 +17,16 @@ test.describe("XXXXXX", async () => {
 
     await loginPage.goToLoginPage();
     await loginPage.login(testData.standardUser.name, testData.standardUser.password);
-    await employeePage.validateEmployeeLogin();
   });
 
-    test("XXXXXX", async () => {
-        // Test code here
+    test("Validate that admin sections are not visible", async () => {
+        await employeePage.validateEmployeeLogin({ timeout: 5000 });
+        await employeePage.validateLunchEditSectionIsNotVisible();
+        await employeePage.validateUserExpensesSectionIsNotVisible();
+    });
+
+
+    test("User should be able to buy lunch", async () => {
+        await employeePage.createAnOrder();
     });
 });

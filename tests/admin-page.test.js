@@ -5,9 +5,8 @@ import { AdminPage } from "../pages/admin-page";
 
 import { testData } from "../data/testData";
 
-test.describe("XXXXXX", async () => {
+test.describe("Admin Page functionality", async () => {
   let loginPage;
-  let employeePage;
   let adminPage;
 
   test.beforeEach(async ({ page }) => {
@@ -37,5 +36,12 @@ test.describe("XXXXXX", async () => {
 
     await expect(addedProvider).toBeVisible();
     await expect(addedProvider).toHaveText(randomProviderName);
+  });
+
+  test("Expenses should be calculated accurately for the admin", async () => {
+    await adminPage.goToExpenses();
+    let sumOfCosts = await adminPage.retrieveSumofCosts();
+    let totalCost = await adminPage.retrieveTotalCostText();
+    expect(sumOfCosts).toBe(totalCost);
   });
 });

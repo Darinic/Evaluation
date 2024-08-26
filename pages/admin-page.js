@@ -20,6 +20,8 @@ export class AdminPage {
     this.mainDishesSection = page.locator('div.v-list__tile__title:has-text("Pagrindiniai Patiekalai")')
     this.mainDishPriceField = page.locator('input[aria-label="Price"][name="Pagrindiniai Patiekalai (Main Dishes) category"]');
     this.mainDishFieldSelection = page.locator('input[aria-label="Selection Name"][name="Pagrindiniai Patiekalai (Main Dishes) category"]');
+    this.expensesSection = page.locator('div.v-list__tile__title:has-text("Users Expenses")');
+
 }
 
   async validateAdminLogin() {
@@ -61,8 +63,25 @@ export class AdminPage {
         await this.providerNameField.fill(providerName);
         await this.providerColorField.fill(color);
     }
- 
 
+    async goToExpenses() {
+        await this.expensesSection.click();
+    }
+
+    async retrieveSumofCosts() {
+        const costs = await this.page.locator('td.text-xs-right:nth-child(4)').evaluateAll(
+            cells => cells.map(cell => parseFloat(cell.innerText.replace('€', '').trim()) || 0)
+          );
+          const sumOfCosts = costs.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+
+        return sumOfCosts;
+    }
+
+    async retrieveTotalCostText() {
+        const totalCostText = await this.page.locator('td:has-text("Total cost:") span').textContent();
+        const totalCost = parseFloat(totalCostText.replace('Total cost:', '').replace('€', '').trim());
+        return totalCost;
+    }
 
 
 }
