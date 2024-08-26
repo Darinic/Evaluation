@@ -12,7 +12,7 @@ export const testData = {
         password: "admin123",
     },
     loggedInStandardUser: "Daniil Arinic",
-    loggedInAdminUser: "Admin 5",
+    loggedInAdminUser: "SUPER ADMIN",
     emptyPassword: {
         name: "standard_user",
         password: "",
@@ -24,8 +24,5 @@ export const testData = {
     emptyUsernameAndPassword: {
         name: "",
         password: "",
-    },
-    errorMessages: {
-        loginErrorMessage: "Epic sadface: Username and password do not match any user in this service",
     },
 };
