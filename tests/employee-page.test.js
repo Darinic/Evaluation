@@ -16,18 +16,20 @@ test.describe("Employee page functionality", async () => {
     adminPage = new AdminPage(page);
 
     await loginPage.goToLoginPage();
-    await loginPage.login(testData.standardUser.name, testData.standardUser.password);
+    await loginPage.login(
+      testData.standardUser.name,
+      testData.standardUser.password
+    );
   });
 
-    test("Validate that admin sections are not visible", async () => {
-        await employeePage.validateEmployeeLogin({ timeout: 5000 });
-        await employeePage.validateLunchEditSectionIsNotVisible();
-        await employeePage.validateUserExpensesSectionIsNotVisible();
-    });
+  test("Validate that admin sections are not visible", async () => {
+    await employeePage.validateEmployeeLogin({ timeout: 5000 });
+    await employeePage.validateLunchEditSectionIsNotVisible();
+    await employeePage.validateUserExpensesSectionIsNotVisible();
+  });
 
-
-    //FAILED due to bugs in the app
-    // test("User should be able to buy lunch", async () => {
-    //     await employeePage.createAnOrder();
-    // });
+  //FAILED due to bugs in the app
+  // test("User should be able to buy lunch", async () => {
+  //     await employeePage.createAnOrder();
+  // });
 });

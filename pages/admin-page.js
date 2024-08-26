@@ -95,36 +95,20 @@ export class AdminPage {
     await this.expensesSection.click();
   }
 
-  async retrieveSumofCosts() {
-    // Initialize an array to hold the cost values
-    const costsArray = [];
+  // async retrieveSumofCosts() {
+  //     const costs = await this.page.locator('tbody tr td:nth-child(4)').evaluateAll(
+  //         cells => cells.map(cell => {
+  //           const rawText = cell.innerText;
+  //           const value = parseFloat(rawText.replace('€', '').trim());
+  //           return value || 0;
+  //         })
+  //       );
 
-    // Locate all cost cells in the 4th column and push their parsed values into the array
-    const costs = await this.page
-      .locator("tbody tr td:nth-child(4)")
-      .evaluateAll((cells) => {
-        return cells.map((cell) => {
-          const rawText = cell.innerText;
-          const value = parseFloat(rawText.replace("€", "").trim());
-          return value || 0; // Return 0 if parsing fails to avoid NaN
-        });
-      });
+  //       // Calculate the sum of all cost values
+  //       const sumOfCosts = costs.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
-    // Add the extracted values to the costsArray
-    costsArray.push(...costs);
-
-    // Calculate the sum of the array
-    const sumOfCosts = costsArray.reduce(
-      (accumulator, currentValue) => accumulator + currentValue,
-      0
-    );
-
-    // Debugging output
-    console.log(`Costs Array: ${costsArray}`);
-    console.log(`Calculated Sum of Costs: ${sumOfCosts}`);
-
-    return sumOfCosts;
-  }
+  //       return sumOfCosts;
+  // }
 
   async retrieveTotalCostText() {
     const totalCostText = await this.page

@@ -19,12 +19,12 @@ test.describe("Admin Page functionality", async () => {
     await loginPage.login(testData.adminUser.name, testData.adminUser.password);
   });
 
-  test('Admin should be able to add a provider', async ({ page }) => {
+  test("Admin should be able to add a provider", async ({ page }) => {
     await adminPage.goToLunchEditPage();
 
     await adminPage.clickAddProviderButton();
 
-    let randomProviderName = await adminPage.generateRandomProviderName()
+    let randomProviderName = await adminPage.generateRandomProviderName();
     let randomColor = await adminPage.generateRandomColor();
 
     await adminPage.fillInProviderFields(randomProviderName, randomColor);
@@ -32,18 +32,20 @@ test.describe("Admin Page functionality", async () => {
     await adminPage.fillInMainDishFields();
     await adminPage.saveButton.click();
 
-    let listLocator = page.locator('div.v-list.v-list--subheader.theme--light');
-    let addedProvider = listLocator.locator(`div.v-list__tile__title:has-text("${randomProviderName}")`);
+    let listLocator = page.locator("div.v-list.v-list--subheader.theme--light");
+    let addedProvider = listLocator.locator(
+      `div.v-list__tile__title:has-text("${randomProviderName}")`
+    );
 
     await expect(addedProvider).toBeVisible();
     await expect(addedProvider).toHaveText(randomProviderName);
   });
 
-  //FAILED due to not calculating sums of costs correctly
-  // test("Expenses should be calculated accurately for the admin", async () => {
-  //   await adminPage.goToExpenses({ timeout: 10000 });
-  //   let sumOfCosts = await adminPage.retrieveSumofCosts();
-  //   let totalCost = await adminPage.retrieveTotalCostText();
-  //   expect(sumOfCosts).toBe(totalCost);
-  // });
+  // FAILED due to not calculating sums of costs correctly
+  test("Expenses should be calculated accurately for the admin", async () => {
+    await adminPage.goToExpenses({ timeout: 10000 });
+    let sumOfCosts = await adminPage.retrieveSumofCosts();
+    let totalCost = await adminPage.retrieveTotalCostText();
+    expect(sumOfCosts).toBe(totalCost);
+  });
 });
